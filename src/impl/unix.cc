@@ -146,9 +146,9 @@ Serial::SerialImpl::open ()
       return;
     case ENFILE:
     case EMFILE:
-      THROW (IOException, "Too many file handles open.");
+      THROW (IOException, "Too many file handles open trying to open:" + port_);
     default:
-      THROW (IOException, errno);
+      THROW (IOException, errno, port_);
     }
   }
 
