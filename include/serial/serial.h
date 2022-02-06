@@ -712,8 +712,8 @@ public:
   explicit IOException (std::string file, int line, const char * description)
     : file_(file), line_(line), errno_(0) {
       std::stringstream ss;
-      ss << "IO Exception: " << description;
-      ss << ", file " << file_ << ", line " << line_ << ".";
+    ss << file_ << ":" << line_ << "\n";
+    ss << "IO Exception: " << description;
       e_what_ = ss.str();
   }
   virtual ~IOException() throw() {}
