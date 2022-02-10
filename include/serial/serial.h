@@ -39,14 +39,15 @@
 #include <limits>
 #include <vector>
 #include <string>
+#include <string_view>
 #include <cstring>
 #include <sstream>
 #include <exception>
 #include <stdexcept>
 #include <serial/v8stdint.h>
 
-#define THROW(exceptionClass, message) throw exceptionClass(__FILE__, \
-__LINE__, (message) )
+#define THROW(exceptionClass, ...) \
+  throw exceptionClass(__FILE__, __LINE__, __VA_ARGS__)
 
 namespace serial {
 
@@ -675,7 +676,7 @@ class SerialException : public std::exception
   SerialException& operator=(const SerialException&);
   std::string e_what_;
 public:
-  SerialException (const char *description) {
+  SerialException (std::string_view description) {
       std::stringstream ss;
       ss << "SerialException " << description << " failed.";
       e_what_ = ss.str();
@@ -696,7 +697,7 @@ class IOException : public std::exception
   std::string e_what_;
   int errno_;
 public:
-  explicit IOException (std::string file, int line, int errnum)
+  explicit IOException (std::string file, int line, int errnum, std::string_view description = "")
     : file_(file), line_(line), errno_(errnum) {
       std::stringstream ss;
 #if defined(_WIN32) && !defined(__MINGW32__)
@@ -706,10 +707,11 @@ public:
       char * error_str = strerror(errnum);
 #endif
       ss << "IO Exception (" << errno_ << "): " << error_str;
+      ss << " " << description;
       ss << ", file " << file_ << ", line " << line_ << ".";
       e_what_ = ss.str();
   }
-  explicit IOException (std::string file, int line, const char * description)
+  explicit IOException (std::string file, int line, std::string_view description)
     : file_(file), line_(line), errno_(0) {
       std::stringstream ss;
     ss << file_ << ":" << line_ << "\n";
@@ -717,7 +719,10 @@ public:
       e_what_ = ss.str();
   }
   virtual ~IOException() throw() {}
-  IOException (const IOException& other) : line_(other.line_), e_what_(other.e_what_), errno_(other.errno_) {}
+  IOException (const IOException& other)
+      : line_(other.line_)
+      , e_what_(other.e_what_)
+      , errno_(other.errno_) {}
 
   int getErrorNumber () const { return errno_; }
 
