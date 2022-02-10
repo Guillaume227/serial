@@ -26,9 +26,9 @@ static const DWORD hardware_id_max_length = 256;
 // Convert a wide Unicode string to an UTF8 string
 std::string utf8_encode(const std::wstring &wstr)
 {
-	int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
+	int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), nullptr, 0, nullptr, nullptr);
 	std::string strTo( size_needed, 0 );
-	WideCharToMultiByte                  (CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
+	WideCharToMultiByte                  (CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, nullptr, nullptr);
 	return strTo;
 }
 
@@ -39,8 +39,8 @@ serial::list_ports()
 
 	HDEVINFO device_info_set = SetupDiGetClassDevs(
 		(const GUID *) &GUID_DEVCLASS_PORTS,
-		NULL,
-		NULL,
+		nullptr,
+		nullptr,
 		DIGCF_PRESENT);
 
 	unsigned int device_info_set_index = 0;
@@ -68,8 +68,8 @@ serial::list_ports()
 		LONG return_code = RegQueryValueEx(
 					hkey,
 					_T("PortName"),
-					NULL,
-					NULL,
+					nullptr,
+					nullptr,
 					(LPBYTE)port_name,
 					&port_name_length);
 
@@ -85,7 +85,7 @@ serial::list_ports()
 
 		// Ignore parallel ports
 
-		if(_tcsstr(port_name, _T("LPT")) != NULL)
+		if(_tcsstr(port_name, _T("LPT")) != nullptr)
 			continue;
 
 		// Get port friendly name
@@ -97,7 +97,7 @@ serial::list_ports()
 					device_info_set,
 					&device_info_data,
 					SPDRP_FRIENDLYNAME,
-					NULL,
+					nullptr,
 					(PBYTE)friendly_name,
 					friendly_name_max_length,
 					&friendly_name_actual_length);
@@ -116,7 +116,7 @@ serial::list_ports()
 					device_info_set,
 					&device_info_data,
 					SPDRP_HARDWAREID,
-					NULL,
+					nullptr,
 					(PBYTE)hardware_id,
 					hardware_id_max_length,
 					&hardware_id_actual_length);
