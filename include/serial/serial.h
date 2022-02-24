@@ -627,9 +627,9 @@ class IOException : public std::exception
 #else
     char * error_str = strerror(errnum);
 #endif
+    ss << file << ":" << line << "\n";
     ss << "IO Exception (" << errno_ << "): " << error_str;
     ss << " " << description;
-    ss << ", file " << file << ", line " << line << ".";
     e_what_ = ss.str();
   }
   explicit IOException (std::string_view const file, int const line, std::string_view const description)
