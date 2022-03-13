@@ -601,13 +601,13 @@ class SerialException : public std::exception {
   std::string e_what_;
 
  public:
-  SerialException(std::string_view description) {
+  explicit SerialException(std::string_view description) {
     std::stringstream ss;
     ss << "SerialException " << description << " failed.";
     e_what_ = ss.str();
   }
 
-  char const* what() const override { return e_what_.c_str(); }
+  char const* what() const noexcept override { return e_what_.c_str(); }
 };
 
 class IOException : public std::exception
@@ -627,9 +627,9 @@ class IOException : public std::exception
 #else
     char * error_str = strerror(errnum);
 #endif
+    ss << file << ":" << line << "\n";
     ss << "IO Exception (" << errno_ << "): " << error_str;
     ss << " " << description;
-    ss << ", file " << file << ", line " << line << ".";
     e_what_ = ss.str();
   }
   explicit IOException (std::string_view const file, int const line, std::string_view const description)
@@ -642,7 +642,7 @@ class IOException : public std::exception
 
   int getErrorNumber() const { return errno_; }
 
-  char const* what() const override { return e_what_.c_str(); }
+  char const* what() const noexcept override { return e_what_.c_str(); }
 };
 
 class PortNotOpenedException : public std::exception {
@@ -654,7 +654,7 @@ class PortNotOpenedException : public std::exception {
     ss << "PortNotOpenedException " << description << " failed.";
     e_what_ = ss.str();
   }
-  char const* what() const override { return e_what_.c_str(); }
+  char const* what() const noexcept override { return e_what_.c_str(); }
 };
 
 /*!
