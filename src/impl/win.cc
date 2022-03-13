@@ -315,7 +315,8 @@ Serial::SerialImpl::available ()
   COMSTAT cs;
   if (not ClearCommError(fd_, nullptr, &cs)) {
     stringstream ss;
-    ss << "Error while checking status of the serial port: " << GetLastError();
+    ss << "Error while checking status of the serial port "
+       << this->getPort() << ": " << GetLastError();
     THROW (IOException, ss.str().c_str());
   }
   return static_cast<size_t>(cs.cbInQue);
