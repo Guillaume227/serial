@@ -80,7 +80,7 @@ Serial::SerialImpl::open ()
     switch (create_file_err) {
     case ERROR_FILE_NOT_FOUND:
       // Use this->getPort to convert to a std::string
-      ss << "Specified port, " << this->getPort() << ", does not exist.";
+      ss << "Specified port " << this->getPort() << " does not exist.";
       THROW (IOException, ss.str().c_str());
 
     case ERROR_ACCESS_DENIED:      
