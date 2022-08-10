@@ -601,11 +601,9 @@ class SerialException : public std::exception {
   std::string e_what_;
 
  public:
-  explicit SerialException(std::string_view description) {
-    std::stringstream ss;
-    ss << "SerialException " << description << " failed.";
-    e_what_ = ss.str();
-  }
+  explicit SerialException(std::string description) :
+    e_what_(std::move(description))
+    {}
 
   char const* what() const noexcept override { return e_what_.c_str(); }
 };
@@ -614,7 +612,12 @@ class IOException : public std::exception
 {
   std::string e_what_;
   int errno_ = 0;
+
  public:
+  explicit IOException(std::string description)
+    : e_what_(std::move(description))
+    {}
+
   explicit IOException(std::string_view const file,
                        int const line,
                        int const errnum,
@@ -649,11 +652,9 @@ class PortNotOpenedException : public std::exception {
   std::string e_what_;
 
  public:
-  explicit PortNotOpenedException(std::string_view const description) {
-    std::stringstream ss;
-    ss << "PortNotOpenedException " << description << " failed.";
-    e_what_ = ss.str();
-  }
+  explicit PortNotOpenedException(std::string description)
+  : e_what_(std::move(description))
+  {}
   char const* what() const noexcept override { return e_what_.c_str(); }
 };
 
