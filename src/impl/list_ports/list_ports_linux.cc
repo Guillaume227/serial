@@ -21,6 +21,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <fcntl.h> // Contains file controls like O_RDWR
 
 #include "serial/serial.h"
 
@@ -293,7 +294,15 @@ usb_sysfs_hw_string(const string& sysfs_path)
 
     return format("USB VID:PID=%s:%s %s", vid.c_str(), pid.c_str(), serial_number.c_str() );
 }
-
+namespace {
+bool check_exists(std::string const& port_name) {
+    auto _fd = open(port_name.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
+    bool failed_open = _fd != -1;
+    if (not failed_open) {
+        close(_fd);
+    }
+}
+}
 vector<PortInfo>
 serial::list_ports()
 {
@@ -314,6 +323,10 @@ serial::list_ports()
     while( iter != devices_found.end() )
     {
         string device = *iter++;
+
+        if (not check_exists(device)) {
+            continue;
+        }
 
         vector<string> sysfs_info = get_sysfs_info( device );
 
